@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/example/nestjs-sequelize-jwt" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/identity-server" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/nestjs-sequelize-jwt" vcs="Git" />
   </component>
