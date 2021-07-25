@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
+import { AuthController } from '../controller/auth.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Auth } from '../models/auth';
 import { AuthService } from '../service/auth';

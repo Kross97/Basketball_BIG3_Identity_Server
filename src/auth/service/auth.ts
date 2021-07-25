@@ -1,20 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Auth } from '../models/auth';
-import { createHmac } from 'crypto';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { encode, decode } from 'js-base64';
+import { buildJWTToken } from '../../helpers/buildJWTToken';
 
-const SECRET_KEY = 'cAtwa1kkEy';
+// constructor(@InjectModel(Auth) private authModel) {} - второй способ получить модель для действий
 
 @Injectable()
 export class AuthService {
   constructor(@InjectModel(Auth) private authModel) {}
 
   async signUp(signUpData): Promise<Auth> {
-    const unToken = decode(signUpData);
-    console.log('UN_TOKEN =>', unToken);
-    return this.authModel.create(signUpData);
+    const token = buildJWTToken(signUpData);
+    return Auth.create({ ...signUpData, access_token: token });
+  }
+
+  async singIn(signIn): Promise<Auth> {
+    const user = await Auth.findOne({ where: { login: signIn.login } });
+    if (user && user.password === signIn.password) {
+      return user;
+    } else {
+      throw { invalidSingIn: true };
+    }
+  }
+
+  async getAllAuth(): Promise<Auth[]> {
+    return await Auth.findAll();
   }
 }
