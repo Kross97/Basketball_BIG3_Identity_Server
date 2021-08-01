@@ -1,7 +1,7 @@
 import { Auth } from '../auth/models/auth';
 import * as crypto from 'crypto';
 
-const secretKey = 'Kross_97';
+export const secretKey = 'Kross_97';
 
 export const buildJWTToken = (body: Auth) => {
   const headerBase64 = Buffer.from(
@@ -12,5 +12,7 @@ export const buildJWTToken = (body: Auth) => {
     .createHmac('SHA256', secretKey)
     .update(`${headerBase64}.${bodyBase64}`)
     .digest('base64');
-  return `${headerBase64}.${bodyBase64}.${signature}`;
+  const token = `${headerBase64}.${bodyBase64}.${signature}`;
+
+  return token;
 };

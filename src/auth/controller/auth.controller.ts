@@ -1,16 +1,39 @@
-import { Controller, Get, Post, Body, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res } from '@nestjs/common';
 import { AuthService } from '../service/auth';
 import { Auth } from '../models/auth';
-import { Sequelize } from 'sequelize-typescript';
 import { Response } from 'express';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('Auth')
 export class AuthController {
-  constructor(
-    private sequelize: Sequelize,
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
+  @ApiBody({
+    schema: {
+      title: 'Title',
+      type: 'object',
+      example: {
+        userName: 'Test',
+        login: 'test_login',
+        password: '1111',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Login_Exist.',
+    schema: {
+      example: {
+        type: 'Login_Exist',
+        message: 'Login for sign up exists!',
+      },
+    },
+  })
   @Post('signUp')
   async signUp(
     @Body() signupData,
@@ -22,6 +45,9 @@ export class AuthController {
       if (err.name === 'SequelizeValidationError') {
         response.status(502);
         return { type: err.errors[0].type, message: err.errors[0].message };
+      } else if (err.type === 'Login_Exist') {
+        response.status(409);
+        return { type: err.type, message: err.message };
       } else {
         response.status(500);
       }
@@ -46,15 +72,5 @@ export class AuthController {
   @Get('getAllAuth')
   async getAllAuths(): Promise<Auth[]> {
     return this.authService.getAllAuth();
-  }
-
-  @Delete()
-  deleleteTable() {
-    this.sequelize.query('drop table auths;');
-  }
-
-  @Get()
-  ping(): string {
-    return 'pong';
   }
 }

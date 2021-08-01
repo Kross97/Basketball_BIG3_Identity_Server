@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
 import { Auth } from '../models/auth';
 import { buildJWTToken } from '../../helpers/buildJWTToken';
 
@@ -7,11 +6,14 @@ import { buildJWTToken } from '../../helpers/buildJWTToken';
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectModel(Auth) private authModel) {}
-
   async signUp(signUpData): Promise<Auth> {
     const token = buildJWTToken(signUpData);
-    return Auth.create({ ...signUpData, access_token: token });
+    const authData = await Auth.findOne({ where: { login: signUpData.login } });
+    if (authData) {
+      throw { type: 'Login_Exist', message: 'Login for sign up exists!' };
+    } else {
+      return Auth.create({ ...signUpData, access_token: token });
+    }
   }
 
   async singIn(signIn): Promise<Auth> {
