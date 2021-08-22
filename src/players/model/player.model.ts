@@ -1,6 +1,7 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
 import Sequelize from 'sequelize';
 import { Blob } from 'buffer';
+import { Team } from '../../teams/models/team.model';
 
 @Table
 export class Player extends Model {
@@ -13,6 +14,7 @@ export class Player extends Model {
   @Column
   position: string;
 
+  @ForeignKey(() => Team)
   @Column
   team: number;
 
