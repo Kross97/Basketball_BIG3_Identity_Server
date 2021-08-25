@@ -34,7 +34,7 @@ export class AuthController {
       },
     },
   })
-  @Post('signUp')
+  @Post('SignUp')
   async signUp(
     @Body() signupData,
     @Res({ passthrough: true }) response: Response,
