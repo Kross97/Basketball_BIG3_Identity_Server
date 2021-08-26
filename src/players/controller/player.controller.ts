@@ -70,7 +70,10 @@ export class PlayerController {
 
   @Get('GetPlayers')
   public async getPlayers() {
-    return await Player.findAll();
+    const allUsers = await Player.findAll();
+    return {
+      data: allUsers,
+    };
   }
 
   @Delete('Delete')

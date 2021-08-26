@@ -57,7 +57,10 @@ export class TeamController {
 
   @Get('GetTeams')
   public async getTeams() {
-    return await Team.findAll();
+    const allTeams = await Team.findAll();
+    return {
+      data: allTeams,
+    };
   }
 
   @Delete('Delete')
